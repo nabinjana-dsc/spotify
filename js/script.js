@@ -19,7 +19,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
   currentFolder = folder;
-  let a = await fetch(`/{folder}/`);
+  let a = await fetch(`/${folder}/`);
   let response = await a.text();
   let div = document.createElement("div");
   div.innerHTML = response;
@@ -124,7 +124,7 @@ async function displayAlbums() {
 
   // Load the playlist whenever card is clicked
   Array.from(document.getElementsByClassName("card")).forEach((e) => {
-    e.addEventListener("click", async item=> {
+    e.addEventListener("click", async (item) => {
       songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
       playMusic(songs[0]);
     });
@@ -165,7 +165,7 @@ async function main() {
   });
 
   // Add an event listener to seekbar
-  document.querySelector(".seekbar").addEventListener("click", e => {
+  document.querySelector(".seekbar").addEventListener("click", (e) => {
     let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
     document.querySelector(".circle").style.left = percent + "%";
     currentSong.currentTime = (currentSong.duration * percent) / 100;
@@ -186,7 +186,7 @@ async function main() {
     currentSong.pause();
     console.log("Previous Song Clicked");
     let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
-    if ((index - 1) >= 0) {
+    if (index - 1 >= 0) {
       playMusic(songs[index - 1]);
     }
   });
@@ -196,7 +196,7 @@ async function main() {
     currentSong.pause();
     console.log("Next Song Clicked");
     let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
-    if ((index + 1) < songs.length) {
+    if (index + 1 < songs.length) {
       playMusic(songs[index + 1]);
     }
   });
@@ -208,6 +208,9 @@ async function main() {
     .addEventListener("change", (e) => {
       console.log("Setting volume to", e.target.value, "/ 100");
       currentSong.volume = parseInt(e.target.value) / 100;
+      if (currentSong.volume >0){
+        document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg");
+      }
     });
 
   // Add event listener to mute the track
@@ -218,7 +221,8 @@ async function main() {
       document
         .querySelector(".range")
         .getElementsByTagName("input")[0].value = 0;
-    } else {
+    } 
+    else {
       e.target.src = e.target.src.replace("mute.svg", "volume.svg");
       currentSong.volume = 0.1;
       document
